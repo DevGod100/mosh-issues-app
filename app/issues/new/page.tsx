@@ -4,7 +4,7 @@ import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import { useState } from "react";
 
-import { Button, Callout, Text, TextField } from "@radix-ui/themes";
+import { Button, Callout, TextField } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import Spinner from "@/app/Components/Spinner";
 type IssueForm = z.infer<typeof createIssueSchema>
 
 const newIssuePage = () => {
+
   const router = useRouter();
   const { register, control, handleSubmit, formState: {errors}} = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema)
@@ -36,6 +37,7 @@ const newIssuePage = () => {
       setError("an unexpected error occurred");
     }
   })
+
 
   return (
     <div className="max-w-xl">
