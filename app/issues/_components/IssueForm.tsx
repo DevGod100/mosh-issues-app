@@ -8,68 +8,66 @@ import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createIssueSchema } from "@/app/validationSchemas";
+import { issueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/Components/ErrorMessage";
 import Spinner from "@/app/Components/Spinner";
 import dynamic from "next/dynamic";
 import { Issue } from "@prisma/client";
 
-const SimpleMDE = dynamic(
-  () => import
-  ("react-simplemde-editor"), 
-  {ssr: false}
-  )
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
-type IssueFormData = z.infer<typeof createIssueSchema>
+type IssueFormData = z.infer<typeof issueSchema>;
 
 interface Props {
-  issue?: Issue
+  issue?: Issue;
 }
-const IssueForm = ({issue}: Props ) => {
-
+const IssueForm = ({ issue }: Props) => {
   const router = useRouter();
-  const { register, control, handleSubmit, formState: {errors}} = useForm<IssueFormData>({
-    resolver: zodResolver(createIssueSchema)
-  });
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IssueFormData>({
+    resolver: zodResolver(issueSchema),
+  }); 
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      setIsSubmitting(true)
-      await axios.post("/api/issues", data);
+      setIsSubmitting(true);
+      if (issue) await axios.patch("/api/issues/" + issue.id, data);
+      else await axios.post("/api/issues", data);
       router.push("/issues");
+      router.refresh();
     } catch (error) {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
       console.log(error);
       setError("an unexpected error occurred");
     }
-  })
-
+  });
 
   return (
     <div className="max-w-xl">
-      { error &&
+      {error && (
         <Callout.Root color="red" className="mb-5">
-        <Callout.Text>
-          {error}
-        </Callout.Text>
-      </Callout.Root>
-      }
-      <form
-        className="space-y-3"
-        onSubmit={onSubmit}
-      >
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input
-          defaultValue={issue?.title}
+            defaultValue={issue?.title}
             placeholder="Search for issues…"
             {...register("title")}
           />
         </TextField.Root>
-       <ErrorMessage>{errors.title?.message}</ErrorMessage>
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           defaultValue={issue?.description}
           name="description"
@@ -79,7 +77,10 @@ const IssueForm = ({issue}: Props ) => {
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting}>Submit new issue {isSubmitting && <Spinner />}</Button>
+        <Button disabled={isSubmitting}>
+          {issue ? 'Update Issue' : 'Submit new issue'} 
+          {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );
