@@ -1,4 +1,5 @@
 "use client";
+import { Skeleton } from "@/app/Components";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -23,7 +24,7 @@ const NavBar = () => {
             <Link href="/">
               <FaBug />
             </Link>
-              <NavLinks />
+            <NavLinks />
           </Flex>
           <AuthStatus />
         </Flex>
@@ -31,7 +32,6 @@ const NavBar = () => {
     </nav>
   );
 };
-
 
 const NavLinks = () => {
   const currentPath = usePathname();
@@ -43,32 +43,35 @@ const NavLinks = () => {
 
   return (
     <ul className="flex space-x-6">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    className={classnames({
-                      "nav-link": true,
-                      "!text-zinc-900": link.href === currentPath,
-                    })}
-                    href={link.href}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-  )
-}
-
+      {links.map((link) => (
+        <li key={link.href}>
+          <Link
+            className={classnames({
+              "nav-link": true,
+              "!text-zinc-900": link.href === currentPath,
+            })}
+            href={link.href}
+          >
+            {link.label}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 const AuthStatus = () => {
   const { status, data: session } = useSession();
-  if(status === 'loading') return null;
-  if(status === 'unauthenticated') 
-  return <Link className='nav-link' href="/api/auth/signin">Login</Link>
+  if (status === "loading") return <Skeleton width='3rem'/>;
+  if (status === "unauthenticated")
+    return (
+      <Link className="nav-link" href="/api/auth/signin">
+        Login
+      </Link>
+    );
 
-return (
-  <Box>
+  return (
+    <Box>
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Avatar
@@ -89,8 +92,8 @@ return (
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
-  </Box>
-  )
+    </Box>
+  );
 };
 
 export default NavBar;
