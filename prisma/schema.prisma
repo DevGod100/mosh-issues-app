@@ -27,12 +27,14 @@ model account {
 }
 
 model issue {
-  id          Int          @id @default(autoincrement())
-  title       String       @db.VarChar(255)
-  description String       @db.Text
-  status      issue_status @default(OPEN)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime
+  id               Int          @id @default(autoincrement())
+  title            String       @db.VarChar(255)
+  description      String       @db.Text
+  status           issue_status @default(OPEN)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime
+  assignedToUserId String?      @db.VarChar(255)
+  assignedToUser   user?        @relation(fields: [assignedToUserId], references: [id])
 }
 
 model session {
@@ -46,13 +48,14 @@ model session {
 }
 
 model user {
-  id            String    @id
-  name          String?
-  email         String?   @unique(map: "User_email_key")
-  emailVerified DateTime?
-  image         String?
-  account       account[]
-  session       session[]
+  id             String    @id
+  name           String?
+  email          String?   @unique(map: "User_email_key")
+  emailVerified  DateTime?
+  image          String?
+  account        account[]
+  session        session[]
+  assignedIssues issue[]
 }
 
 model verificationtoken {
