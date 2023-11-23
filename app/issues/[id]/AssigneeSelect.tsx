@@ -6,11 +6,11 @@ import { issue, user } from "@prisma/client";
 import axios from 'axios';
 import {useQuery} from '@tanstack/react-query'
 
-const AssigneeSelect = () => {
+const AssigneeSelect = ({issue}: {issue: issue}) => {
   const {data: users, error, isLoading} =useQuery<user[]>({
     queryKey: ['users'],
     queryFn: () => axios.get('/api/users').then(res => res.data),
-    staleTime: 60 * 10000, // 10 min
+    staleTime: 60 * 1000, // 10 min
     retry: 3
   })
   
@@ -19,11 +19,17 @@ const AssigneeSelect = () => {
   if (error) return null;
 
   return (
-    <Select.Root>
+    <Select.Root 
+    // defaultValue={issue.assignedToUserId || ""}
+    onValueChange={(userId) => {
+      axios.patch("/api/issues/" + issue.id, {assignToUserId: userId || null})
+    }}>
   <Select.Trigger placeholder='Assign...'/>
   <Select.Content>
     <Select.Group>
       <Select.Label>Suggestions</Select.Label>
+      {/* <Select.Item  value="">Unassigned</Select.Item> */}
+
       {users?.map(user => (
         <Select.Item key={user.id} value={user.id}>{user.name}</Select.Item>
       ))}
