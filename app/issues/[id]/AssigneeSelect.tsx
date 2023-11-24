@@ -20,15 +20,17 @@ const AssigneeSelect = ({issue}: {issue: issue}) => {
 
   return (
     <Select.Root 
-    // defaultValue={issue.assignedToUserId || ""}
+    defaultValue={issue.assignedToUserId || ""}
     onValueChange={(userId) => {
-      axios.patch("/api/issues/" + issue.id, {assignToUserId: userId || null})
+      // axios.patch("/api/issues/" + issue.id, {assignToUserId: userId || null})
+      axios.patch("/api/issues/" + issue.id, {assignToUserId: userId === "unassigned" ? null : userId}) // fix bug from this dude  https://forum.codewithmosh.com/t/a-select-item-must-have-a-value-prop-that-is-not-an-empty-string-this-is-because-the-select-value-can-be-set-to-an-empty-string-to-clear-the-selection-and-show-the-placeholder/23078
     }}>
   <Select.Trigger placeholder='Assign...'/>
   <Select.Content>
     <Select.Group>
       <Select.Label>Suggestions</Select.Label>
       {/* <Select.Item  value="">Unassigned</Select.Item> */}
+      <Select.Item  value="unassigned">Unassigned</Select.Item>
 
       {users?.map(user => (
         <Select.Item key={user.id} value={user.id}>{user.name}</Select.Item>
