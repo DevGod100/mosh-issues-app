@@ -14,13 +14,13 @@ import { issueSchema } from "@/app/validationSchemas";
 import { z } from "zod";
 import ErrorMessage from "@/app/Components/ErrorMessage";
 import Spinner from "@/app/Components/Spinner";
-import { Issue } from "@prisma/client";
+import { issue } from "@prisma/client";
 
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
 interface Props {
-  issue?: Issue;
+  issue?: issue;
 }
 const IssueForm = ({ issue }: Props) => {
   const router = useRouter();
@@ -41,7 +41,7 @@ const IssueForm = ({ issue }: Props) => {
       setIsSubmitting(true);
       if (issue) await axios.patch("/api/issues/" + issue.id, data);
       else await axios.post("/api/issues", data);
-      router.push("/issues");
+      router.push("/issues/list");
       router.refresh();
     } catch (error) {
       setIsSubmitting(false);
