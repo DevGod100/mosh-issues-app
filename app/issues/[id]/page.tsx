@@ -28,7 +28,7 @@ const IssueDetailPage = async ({ params }: Props) => {
       <Box>
         <Flex direction='column' gap='4'>
           {/* Not working wtf.... */}
-          {/* <AssigneeSelect issue={issue}/> */}
+          <AssigneeSelect issue={issue}/>
        <EditIssueButton issueId={issue.id}/>
        <DeleteIssueButton issueId={issue.id}/>
        </Flex>
