@@ -1,6 +1,5 @@
+import Pagination from "./Components/Pagination";
 
-export default function Home() {
-  return (
-    <div>homo page</div>
-  )
+export default function Home({searchParams}: {searchParams: {page: string}}) {
+  return <Pagination itemCount={100} pageSize={10} currentPage={parseInt(searchParams.page)} />;
 }
