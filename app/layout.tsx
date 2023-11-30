@@ -26,7 +26,8 @@ export default function RootLayout({
         {/* <Theme appearance="light" accentColor="yellow"> */}
         <QueryClientProvider>
         <AuthProvider>
-        <Theme appearance="light" accentColor="iris">
+        {/* <Theme appearance="light" accentColor="iris"> */}
+        <Theme appearance="light" accentColor="yellow" scaling="110%">
           <NavBar />
           <main className="p-5">
             <Container>{children}</Container>
